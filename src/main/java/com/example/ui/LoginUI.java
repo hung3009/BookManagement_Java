@@ -37,6 +37,7 @@ public class LoginUI extends JFrame {
     private JLabel lblTitle;
     private JCheckBox rememberPassword;
     private JButton btnForgotPassword;
+    private JButton btnRegister;
     
     private UserService userService;
 
@@ -57,6 +58,7 @@ public class LoginUI extends JFrame {
         ImageIcon iconBig = new ImageIcon(getClass().getResource("/icons/open-book.png"));
         ImageIcon iconLogin = new ImageIcon(getClass().getResource("/icons/log-in.png"));
         ImageIcon iconExit = new ImageIcon(getClass().getResource("/icons/button.png"));
+        ImageIcon iconRegister = new ImageIcon(getClass().getResource("/icons/register.png"));
 
         Font font = new Font("SansSerif", Font.BOLD, 30);
         Font fontBtn = new Font("SansSerif", Font.BOLD, 15);
@@ -105,7 +107,7 @@ public class LoginUI extends JFrame {
         // Empty space
         box.add(Box.createVerticalStrut(20));
 
-        // Login and Exit buttons box
+        // Login and Exitn and Register buttons box
         Box buttonsBox = Box.createHorizontalBox();
         buttonsBox.add(btnLogin = new JButton("LOGIN"));
         buttonsBox.add(Box.createRigidArea(new Dimension(50, 0)));
@@ -117,6 +119,13 @@ public class LoginUI extends JFrame {
         btnExit.setIcon(iconExit);
         btnExit.setFont(fontBtn);
         btnExit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        buttonsBox.add(btnRegister = new JButton("REGISTER"));
+        buttonsBox.add(Box.createRigidArea(new Dimension(0, 0)));
+        btnRegister.setIcon(iconRegister);
+        btnRegister.setFont(fontBtn);
+        btnRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+
         box.add(buttonsBox);
 
         add(box, BorderLayout.NORTH);
@@ -132,6 +141,19 @@ public class LoginUI extends JFrame {
                 login(username, password);
             }
         });
+
+
+        //Su kien cho nut
+        btnRegister.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Mở giao diện RegisterUI khi nhấn nút Register
+                RegisterUI registerUI = new RegisterUI();
+                registerUI.setVisible(true);
+            }
+        });
+
+
     }
     
  // Phương thức kiểm tra đăng nhập sử dụng UserService

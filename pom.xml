@@ -22,5 +22,11 @@
 	        <artifactId>commons-lang3</artifactId>
 	        <version>3.12.0</version> <!-- Điều chỉnh phiên bản nếu cần -->
 	    </dependency>
+
+		<dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.4</version>
+		</dependency>
 	</dependencies>
 </project>

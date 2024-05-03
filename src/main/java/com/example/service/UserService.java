@@ -13,6 +13,11 @@ public class UserService {
         this.userDao = new UserDao();
     }
 
+    //Đăng kí người dùng
+    public boolean register(User user) {
+        return userDao.register(user);
+    }
+
     // Thêm một người dùng mới
     public boolean addUser(User user) {
         return userDao.addUser(user);

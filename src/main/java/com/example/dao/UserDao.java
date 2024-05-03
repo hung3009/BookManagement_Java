@@ -9,31 +9,64 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDao {
-	
-	// Truy vấn người dùng theo tên đăng nhập và mật khẩu
-	public User getUserByUsernameAndPassword(String username, String password) {
-	    User user = null;
-	    String query = "SELECT * FROM Users WHERE Username = ? AND Password = ?";
+    // Trong class UserDAO
+    public boolean register(User user) {
+        String query = "INSERT INTO Users (Username, Password, RoleId, Fullname, Email, PhoneNumber, Address, Gender, IsActive) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-	    try (Connection connection = MySQLConnector.getConnection();
-	         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = MySQLConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-	        preparedStatement.setString(1, username);
-	        preparedStatement.setString(2, password);
-	        ResultSet resultSet = preparedStatement.executeQuery();
+            preparedStatement.setString(1, user.getUsername());
+            // Hash mật khẩu bằng BCrypt trước khi lưu vào cơ sở dữ liệu
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            preparedStatement.setString(2, hashedPassword);
+            preparedStatement.setInt(3, 2); // Mặc định là 2
+            preparedStatement.setString(4, user.getFullname());
+            preparedStatement.setString(5, user.getEmail());
+            preparedStatement.setString(6, user.getPhoneNumber());
+            preparedStatement.setString(7, user.getAddress());
+            preparedStatement.setString(8, user.getGender());
+            preparedStatement.setBoolean(9, true); // Mặc định là true
 
-	        if (resultSet.next()) {
-	            user = mapResultSetToUser(resultSet);
-	        }
+            int rowsAffected = preparedStatement.executeUpdate();
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+            return rowsAffected > 0;
 
-	    return user;
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
+    public User getUserByUsernameAndPassword(String username, String password) {
+        User user = null;
+        String query = "SELECT * FROM Users WHERE Username = ?";
+
+        try (Connection connection = MySQLConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String hashedPassword = resultSet.getString("Password");
+                if (BCrypt.checkpw(password, hashedPassword)) {
+                    user = mapResultSetToUser(resultSet);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
 
     // Xem danh sách người dùng
     public List<User> getAllUsers() {
