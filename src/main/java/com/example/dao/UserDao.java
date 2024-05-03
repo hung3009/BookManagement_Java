@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 
+import javax.swing.*;
+
 public class UserDao {
     // Trong class UserDAO
     public boolean register(User user) {
@@ -43,7 +45,6 @@ public class UserDao {
         return false;
     }
 
-
     public User getUserByUsernameAndPassword(String username, String password) {
         User user = null;
         String query = "SELECT * FROM Users WHERE Username = ?";
@@ -57,7 +58,12 @@ public class UserDao {
             if (resultSet.next()) {
                 String hashedPassword = resultSet.getString("Password");
                 if (BCrypt.checkpw(password, hashedPassword)) {
-                    user = mapResultSetToUser(resultSet);
+                    boolean isActive = resultSet.getBoolean("isActive");
+                    if (isActive) {
+                        user = mapResultSetToUser(resultSet);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "User is not active.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
 
@@ -67,6 +73,7 @@ public class UserDao {
 
         return user;
     }
+
 
     // Xem danh sách người dùng
     public List<User> getAllUsers() {
@@ -98,7 +105,8 @@ public class UserDao {
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            preparedStatement.setString(2, hashedPassword);
             preparedStatement.setInt(3, user.getRoleID());
             preparedStatement.setString(4, user.getFullname());
             preparedStatement.setString(5, user.getEmail());
@@ -263,9 +271,9 @@ public class UserDao {
                 String storedPassword = resultSet.getString("Password");
 
                 // Kiểm tra mật khẩu gốc
-                if (storedPassword.equals(oldPassword)) {
+                if (BCrypt.checkpw(oldPassword, storedPassword)) {
                     // Nếu mật khẩu gốc đúng, thực hiện đổi mật khẩu mới
-                    return updatePassword(userID, newPassword);
+                    return updatePassword(userID, BCrypt.hashpw(newPassword, BCrypt.gensalt()));
                 }
             }
 
@@ -276,6 +284,7 @@ public class UserDao {
         // Mật khẩu gốc không đúng hoặc có lỗi xảy ra
         return false;
     }
+
 
     // Hàm cập nhật mật khẩu mới
     private boolean updatePassword(int userID, String newPassword) {

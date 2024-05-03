@@ -107,7 +107,7 @@ public class LoginUI extends JFrame {
         // Empty space
         box.add(Box.createVerticalStrut(20));
 
-        // Login and Exitn and Register buttons box
+        // Login and Exit and Register buttons box
         Box buttonsBox = Box.createHorizontalBox();
         buttonsBox.add(btnLogin = new JButton("LOGIN"));
         buttonsBox.add(Box.createRigidArea(new Dimension(50, 0)));

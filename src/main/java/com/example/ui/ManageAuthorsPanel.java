@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ManageAuthorsPanel extends JPanel {
 
@@ -192,6 +193,14 @@ public class ManageAuthorsPanel extends JPanel {
         clearFields();
     }
 
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pat = Pattern.compile(emailRegex);
+        return pat.matcher(email).matches();
+    }
+
+
     private void addAuthor() {
         try {
             String authorName = authorNameField.getText().trim();
@@ -203,6 +212,12 @@ public class ManageAuthorsPanel extends JPanel {
 
             if (!authorName.isEmpty() && !email.isEmpty() && !phoneNumber.isEmpty() && birthDate != null
                     && !gender.isEmpty() && !hometown.isEmpty()) {
+
+                //kiểm tra  dịnh dạng email có đúng ko
+                if (!isValidEmail(email)) {
+                    JOptionPane.showMessageDialog(this, "Email is not in valid format.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 Author newAuthor = new Author(0, authorName, email, phoneNumber, birthDate, gender, hometown, true);
 
@@ -233,6 +248,12 @@ public class ManageAuthorsPanel extends JPanel {
 
                 if (!newName.isEmpty() && !newEmail.isEmpty() && !newPhoneNumber.isEmpty() && newBirthDate != null
                         && !newGender.isEmpty() && !newHometown.isEmpty()) {
+
+                    //kiểm tra  dịnh dạng email có đúng ko
+                    if (!isValidEmail(newEmail)) {
+                        JOptionPane.showMessageDialog(this, "Email is not in valid format.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
 
                     selectedAuthor.setAuthorName(newName);
                     selectedAuthor.setEmail(newEmail);

@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ManageUsersPanel extends JPanel {
 
@@ -25,7 +26,8 @@ public class ManageUsersPanel extends JPanel {
     private JTextField emailField;
     private JTextField phoneNumberField;
     private JTextField addressField;
-    private JTextField genderField;
+//    private JTextField genderField;
+    private JComboBox<String> genderComboBox;
     private JCheckBox isActiveCheckbox;
     private JButton addButton;
     private JButton updateButton;
@@ -111,7 +113,8 @@ public class ManageUsersPanel extends JPanel {
         emailField = new JTextField(15);
         phoneNumberField = new JTextField(15);
         addressField = new JTextField(15);
-        genderField = new JTextField(15);
+//        genderField = new JTextField(15);
+        genderComboBox = new JComboBox<>(new String[]{"Nam", "Nữ"});
         isActiveCheckbox = new JCheckBox("Active");
 
         inputPanel.add(new JLabel("Username:"));
@@ -129,7 +132,7 @@ public class ManageUsersPanel extends JPanel {
         inputPanel.add(new JLabel("Address:"));
         inputPanel.add(addressField);
         inputPanel.add(new JLabel("Gender:"));
-        inputPanel.add(genderField);
+        inputPanel.add(genderComboBox);
 
         addButton = new JButton("Add");
         updateButton = new JButton("Update");
@@ -166,6 +169,14 @@ public class ManageUsersPanel extends JPanel {
         loadRoles();
     }
 
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pat = Pattern.compile(emailRegex);
+        return pat.matcher(email).matches();
+    }
+
+
+
     private void addOrUpdateUser(boolean isAdd) {
         try {
             String username = usernameField.getText();
@@ -175,11 +186,16 @@ public class ManageUsersPanel extends JPanel {
             String email = emailField.getText();
             String phoneNumber = phoneNumberField.getText();
             String address = addressField.getText();
-            String gender = genderField.getText();
+            String gender = (String) genderComboBox.getSelectedItem();
             boolean isActive = isActiveCheckbox.isSelected();
 
             if (username.isEmpty() || password.isEmpty() || selectedRole == null || fullname.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                JOptionPane.showMessageDialog(this, "Email is not in valid format.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -270,7 +286,7 @@ public class ManageUsersPanel extends JPanel {
             String sortType = (String) sortComboBox.getSelectedItem();
             // Convert the sort type to uppercase for consistency
             sortType = sortType.toUpperCase();
-            
+
             List<User> sortedUsers = userService.sortUsers(sortType);
             updateTable(sortedUsers);
         } catch (Exception e) {
@@ -297,7 +313,8 @@ public class ManageUsersPanel extends JPanel {
             emailField.setText(user.getEmail());
             phoneNumberField.setText(user.getPhoneNumber());
             addressField.setText(user.getAddress());
-            genderField.setText(user.getGender());
+//            genderField.setText(user.getGender());
+            genderComboBox.setSelectedItem(user.getGender());
             isActiveCheckbox.setSelected(user.isActive());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -314,7 +331,7 @@ public class ManageUsersPanel extends JPanel {
             return "";
         }
     }
-    
+
  // Update the updateTable method
     private void updateTable(List<User> users) {
         tableModel.setRowCount(0);
@@ -343,7 +360,7 @@ public class ManageUsersPanel extends JPanel {
         emailField.setText("");
         phoneNumberField.setText("");
         addressField.setText("");
-        genderField.setText("");
+        genderComboBox.setSelectedIndex(0);
         isActiveCheckbox.setSelected(false);
     }
 
@@ -375,3 +392,4 @@ public class ManageUsersPanel extends JPanel {
         }
     }
 }
+

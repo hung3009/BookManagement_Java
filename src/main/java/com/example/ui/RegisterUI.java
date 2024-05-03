@@ -20,11 +20,16 @@ public class RegisterUI extends JFrame {
     private JButton btnBack;
     private UserService userService;
 
+    private JPanel headerPanel;
+
+    private JLabel lblTitle;
+
+
     public RegisterUI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setTitle("Register - Bookstore Management System");
-        setSize(600, 400);
+        setSize(700, 500);
         setLocationRelativeTo(null);
         ImageIcon icon = new ImageIcon(getClass().getResource("/icons/logo.png"));
         setIconImage(icon.getImage());
@@ -34,10 +39,28 @@ public class RegisterUI extends JFrame {
     }
 
     private void init() {
+        Font font = new Font("SansSerif", Font.BOLD, 30);
         Font fontBtn = new Font("SansSerif", Font.BOLD, 15);
+
+        ImageIcon iconBig = new ImageIcon(getClass().getResource("/icons/open-book.png"));
+        ImageIcon iconSubmit = new ImageIcon(getClass().getResource("/icons/submit.png"));
+        ImageIcon iconBack = new ImageIcon(getClass().getResource("/icons/back.png"));
+
+
 
         // Box layout
         Box box = Box.createVerticalBox();
+
+        //Header Box
+        Box headerBox = Box.createHorizontalBox();
+        headerBox.add(Box.createRigidArea(new Dimension(20, 0)));
+        headerBox.add(headerPanel = new JPanel());
+        headerPanel.add(Box.createVerticalStrut(100));
+        headerPanel.add(lblTitle = new JLabel("REGISTER EMPLOYEE"));
+        lblTitle.setIcon(iconBig);
+        lblTitle.setFont(font);
+        lblTitle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        box.add(headerBox);
 
         // Username box
         Box usernameBox = Box.createHorizontalBox();
@@ -130,10 +153,12 @@ public class RegisterUI extends JFrame {
         Box buttonsBox = Box.createHorizontalBox();
         buttonsBox.add(btnSubmit = new JButton("SUBMIT"));
         btnSubmit.setFont(fontBtn);
+        btnSubmit.setIcon(iconSubmit);
         btnSubmit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         buttonsBox.add(Box.createRigidArea(new Dimension(20, 0)));
         buttonsBox.add(btnBack = new JButton("BACK"));
         btnBack.setFont(fontBtn);
+        btnBack.setIcon(iconBack);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         box.add(buttonsBox);
 

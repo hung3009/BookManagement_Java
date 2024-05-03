@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ManagePublishersPanel extends JPanel {
 
@@ -170,6 +171,13 @@ public class ManagePublishersPanel extends JPanel {
         loadPublishers();
     }
 
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pat = Pattern.compile(emailRegex);
+        return pat.matcher(email).matches();
+    }
+
+
     private void loadPublishers() {
         List<Publisher> publishers = publisherService.getAllPublishers();
         updateTable(publishers);
@@ -185,6 +193,10 @@ public class ManagePublishersPanel extends JPanel {
             boolean isActive = isActiveCheckbox.isSelected();
 
             if (!publisherName.isEmpty() && !address.isEmpty() && !phoneNumber.isEmpty() && !email.isEmpty()) {
+                if (!isValidEmail(email)) {
+                    JOptionPane.showMessageDialog(this, "Email is not in valid format.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 Publisher newPublisher = new Publisher(0, publisherName, address, phoneNumber, email, isActive);
 
@@ -213,6 +225,11 @@ public class ManagePublishersPanel extends JPanel {
                 boolean newIsActive = isActiveCheckbox.isSelected();
 
                 if (!newPublisherName.isEmpty() && !newAddress.isEmpty() && !newPhoneNumber.isEmpty() && !newEmail.isEmpty()) {
+
+                    if (!isValidEmail(newEmail)) {
+                        JOptionPane.showMessageDialog(this, "Email is not in valid format.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
 
                     selectedPublisher.setPublisherName(newPublisherName);
                     selectedPublisher.setAddress(newAddress);
