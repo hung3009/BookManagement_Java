@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 public class RegisterUI extends JFrame {
     private JTextField txtUsername;
@@ -15,7 +16,8 @@ public class RegisterUI extends JFrame {
     private JTextField txtEmail;
     private JTextField txtPhoneNumber;
     private JTextField txtAddress;
-    private JTextField txtGender;
+//    private JTextField txtGender;
+    private JComboBox<String> cbGender;
     private JButton btnSubmit;
     private JButton btnBack;
     private UserService userService;
@@ -28,7 +30,7 @@ public class RegisterUI extends JFrame {
     public RegisterUI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-        setTitle("Register - Bookstore Management System");
+        setTitle("Register Employee - Bookstore Management System");
         setSize(700, 500);
         setLocationRelativeTo(null);
         ImageIcon icon = new ImageIcon(getClass().getResource("/icons/logo.png"));
@@ -139,9 +141,11 @@ public class RegisterUI extends JFrame {
         genderBox.add(Box.createRigidArea(new Dimension(20, 0)));
         genderBox.add(new JLabel("Gender:"));
         genderBox.add(Box.createRigidArea(new Dimension(70, 0))); // Reduce the gap
-        genderBox.add(txtGender = new JTextField());
-        txtGender.setPreferredSize(new Dimension(0, 30));
-        txtGender.setToolTipText("Enter your gender");
+        String[] genders = {"Nam", "Nữ"};
+        cbGender = new JComboBox<>(genders);
+        cbGender.setPreferredSize(new Dimension(0, 30));
+        cbGender.setToolTipText("Select your gender");
+        genderBox.add(cbGender);
         genderBox.add(Box.createRigidArea(new Dimension(50, 0)));
         box.add(Box.createVerticalStrut(10));
         box.add(genderBox);
@@ -176,7 +180,8 @@ public class RegisterUI extends JFrame {
                 user.setEmail(txtEmail.getText().trim());
                 user.setPhoneNumber(txtPhoneNumber.getText().trim());
                 user.setAddress(txtAddress.getText().trim());
-                user.setGender(txtGender.getText().trim());
+                user.setGender(cbGender.getSelectedItem().toString());
+
                 // Gọi phương thức register() để thêm người dùng mới
                 registerUser(user);
             }
@@ -193,6 +198,8 @@ public class RegisterUI extends JFrame {
             }
         });
     }
+
+
 
     // Phương thức để thêm người dùng mới
     private void registerUser(User user) {

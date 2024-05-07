@@ -61,10 +61,10 @@ public class ManageStatisticsPanel extends JPanel implements ActionListener {
         Dimension preferredSize = new Dimension(150, 30);
         dateChooserStart.setPreferredSize(preferredSize);
         dateChooserEnd.setPreferredSize(preferredSize);
-        txtBookId = new JTextField(10);
-        txtCategoryId = new JTextField(10);
-        txtEmployeeId = new JTextField(10);
-        txtCustomerId = new JTextField(10);  // Thêm input mã khách hàng
+        txtBookId = new JTextField(5);
+        txtCategoryId = new JTextField(5);
+        txtEmployeeId = new JTextField(5);
+        txtCustomerId = new JTextField(5);  // Thêm input mã khách hàng
         btnSearchBook = new JButton("Search Book");
         btnSearchCategory = new JButton("Search Category");
         btnSearchEmployee = new JButton("Search Employee");

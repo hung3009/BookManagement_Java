@@ -9,11 +9,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
 
 public class UserDao {
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pat = Pattern.compile(emailRegex);
+        return pat.matcher(email).matches();
+    }
     // Trong class UserDAO
     public boolean register(User user) {
         String query = "INSERT INTO Users (Username, Password, RoleId, Fullname, Email, PhoneNumber, Address, Gender, IsActive) " +
@@ -28,7 +35,14 @@ public class UserDao {
             preparedStatement.setString(2, hashedPassword);
             preparedStatement.setInt(3, 2); // Mặc định là 2
             preparedStatement.setString(4, user.getFullname());
-            preparedStatement.setString(5, user.getEmail());
+            if (!isValidEmail(user.getEmail())) {
+                JOptionPane.showMessageDialog(null, "Email is not in valid format.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                preparedStatement.setString(5, user.getEmail());
+            }
+
+
             preparedStatement.setString(6, user.getPhoneNumber());
             preparedStatement.setString(7, user.getAddress());
             preparedStatement.setString(8, user.getGender());
